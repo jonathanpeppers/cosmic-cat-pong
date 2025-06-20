@@ -18,8 +18,22 @@ const PADDLE_HEIGHT = 100;
 const PADDLE_WIDTH = 50;
 const PLANET_SIZE = 40;
 const PADDLE_SPEED = 10;
-const INITIAL_PLANET_SPEED = 5;
+const INITIAL_PLANET_SPEED = 3;
 const WINNING_SCORE = 10;
+
+// Speed multipliers for different speed settings
+const SPEED_MULTIPLIERS = {
+  slow: 0.6,
+  normal: 1.0,
+  fast: 1.5
+};
+
+// Bounce speed increase for different speed settings
+const BOUNCE_INCREASE = {
+  slow: 1.01,
+  normal: 1.02,
+  fast: 1.03
+};
 
 const SpaceCatPong: React.FC = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -35,6 +49,7 @@ const SpaceCatPong: React.FC = () => {
   const [rightScore, setRightScore] = useState(0);
   const [winner, setWinner] = useState<'left' | 'right' | null>(null);
   const [showInstructions, setShowInstructions] = useState(true);
+  const [speedSetting, setSpeedSetting] = useKV('space-cat-pong-speed', 'slow' as 'slow' | 'normal' | 'fast');
   
   // Persistent high score from KV storage
   const [highScore, setHighScore] = useKV('space-cat-pong-high-score', 0);
@@ -44,6 +59,11 @@ const SpaceCatPong: React.FC = () => {
   
   // Animation frame ID for cleanup
   const animationFrameId = useRef<number | null>(null);
+  
+  // Calculate current speed based on speed setting
+  const getAdjustedSpeed = useCallback((baseSpeed: number) => {
+    return baseSpeed * SPEED_MULTIPLIERS[speedSetting];
+  }, [speedSetting]);
   
   // Initialize the game
   const initializeGame = useCallback(() => {
@@ -63,14 +83,14 @@ const SpaceCatPong: React.FC = () => {
       y: (rect.height - PLANET_SIZE) / 2
     });
     
-    // Set initial velocity
-    setPlanetVelocity(getInitialVelocity(INITIAL_PLANET_SPEED));
+    // Set initial velocity adjusted for speed setting
+    setPlanetVelocity(getInitialVelocity(getAdjustedSpeed(INITIAL_PLANET_SPEED)));
     
     // Reset scores and winner
     setLeftScore(0);
     setRightScore(0);
     setWinner(null);
-  }, []);
+  }, [getAdjustedSpeed]);
   
   // Handle window resize
   useEffect(() => {
@@ -101,6 +121,25 @@ const SpaceCatPong: React.FC = () => {
   useEffect(() => {
     initializeGame();
   }, [initializeGame]);
+  
+  // Handle speed setting changes
+  useEffect(() => {
+    if (!isPlaying) {
+      // Adjust planet velocity based on new speed setting
+      setPlanetVelocity(prev => {
+        const currentSpeed = Math.sqrt(prev.x * prev.x + prev.y * prev.y);
+        if (currentSpeed === 0) return prev;
+        
+        const newSpeed = getAdjustedSpeed(INITIAL_PLANET_SPEED);
+        const ratio = newSpeed / currentSpeed;
+        
+        return {
+          x: prev.x * ratio,
+          y: prev.y * ratio
+        };
+      });
+    }
+  }, [speedSetting, isPlaying, getAdjustedSpeed]);
   
   // Keyboard event handlers
   useEffect(() => {
@@ -212,7 +251,7 @@ const SpaceCatPong: React.FC = () => {
       const bounceVelocity = calculateBounce(
         planetVelocity,
         { x: 1, y: normalizedHit * 0.5 },  // Tilting the normal based on hit position
-        1.05  // 5% speed increase on each hit
+        BOUNCE_INCREASE[speedSetting]  // Speed increase based on difficulty
       );
       
       setPlanetVelocity(bounceVelocity);
@@ -228,7 +267,7 @@ const SpaceCatPong: React.FC = () => {
       const bounceVelocity = calculateBounce(
         planetVelocity,
         { x: -1, y: normalizedHit * 0.5 },  // Tilting the normal based on hit position
-        1.05  // 5% speed increase on each hit
+        BOUNCE_INCREASE[speedSetting]  // Speed increase based on difficulty
       );
       
       setPlanetVelocity(bounceVelocity);
@@ -293,7 +332,8 @@ const SpaceCatPong: React.FC = () => {
     planetVelocity, 
     rightPaddlePos, 
     rightScore,
-    setHighScore
+    setHighScore,
+    speedSetting
   ]);
   
   // Reset planet position after scoring
@@ -308,9 +348,11 @@ const SpaceCatPong: React.FC = () => {
     const direction = scorer === 'left' ? -1 : 1;
     const angle = (Math.random() * Math.PI / 4) - (Math.PI / 8); // -22.5 to 22.5 degrees
     
+    const speed = getAdjustedSpeed(INITIAL_PLANET_SPEED);
+    
     setPlanetVelocity({
-      x: Math.cos(angle) * INITIAL_PLANET_SPEED * direction,
-      y: Math.sin(angle) * INITIAL_PLANET_SPEED * (Math.random() > 0.5 ? 1 : -1)
+      x: Math.cos(angle) * speed * direction,
+      y: Math.sin(angle) * speed * (Math.random() > 0.5 ? 1 : -1)
     });
     
     // Short pause before continuing
@@ -321,6 +363,10 @@ const SpaceCatPong: React.FC = () => {
   const handleGameReset = () => {
     initializeGame();
     setIsPlaying(false);
+  };
+  
+  const handleSpeedChange = (speed: 'slow' | 'normal' | 'fast') => {
+    setSpeedSetting(speed);
   };
   
   return (
@@ -367,6 +413,8 @@ const SpaceCatPong: React.FC = () => {
           isPlaying={isPlaying}
           onTogglePlay={() => setIsPlaying(!isPlaying)}
           onReset={handleGameReset}
+          speed={speedSetting}
+          onSpeedChange={handleSpeedChange}
         />
         
         <Button

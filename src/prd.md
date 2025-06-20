@@ -44,6 +44,11 @@
    - Why: Reinforces the space theme and creates visual interest
    - Success: Visually appealing without distracting from gameplay
 
+6. **Speed Control**
+   - What: Options to adjust the speed of the planet (slow, normal, fast)
+   - Why: Accommodates different skill levels and preferences
+   - Success: Noticeable difference between speeds, persistent setting between games
+
 ## Design Direction
 
 ### Visual Tone & Identity
@@ -89,7 +94,7 @@
 - **Component Usage**: Cards for score display, Button for game start/restart
 - **Component Customization**: Rounded corners on all UI elements for a friendly feel
 - **Component States**: Buttons highlight on hover with slight scale increase
-- **Icon Selection**: Simple play/pause icons, star icon for high scores
+- **Icon Selection**: Simple play/pause icons, star icon for high scores, gauge icon for speed setting
 - **Component Hierarchy**: Game area as primary focus, controls as secondary
 - **Spacing System**: Consistent 4-unit spacing grid (Tailwind's default)
 - **Mobile Adaptation**: Touch controls appear for mobile play
@@ -107,13 +112,16 @@
 - **Potential Obstacles**: Various screen sizes affecting gameplay
 - **Edge Case Handling**: Pause functionality when browser tab loses focus
 - **Technical Constraints**: Maintaining consistent frame rates across devices
+- **Gameplay Balance**: Speed modifiers to keep game challenging but not frustrating
 
 ## Implementation Considerations
 - **Scalability Needs**: Potential for additional levels or game modes
 - **Testing Focus**: Collision detection accuracy, control responsiveness
 - **Critical Questions**: How to balance game difficulty progression?
+- **Speed Considerations**: Maximum speed limitations to prevent unplayable scenarios
 
 ## Reflection
 - The combination of cats and space creates a unique, memorable theme that elevates the classic Pong experience
 - We've assumed players are familiar with Pong's basic concept
 - Adding character animations and playful sound effects would make this truly exceptional
+- Adjustable speed settings make the game accessible to players of all skill levels

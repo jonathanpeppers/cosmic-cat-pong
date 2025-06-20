@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
-import { Keyboard, Info } from '@phosphor-icons/react';
+import { Keyboard, Info, Gauge } from '@phosphor-icons/react';
 
 interface GameInstructionsProps {
   onClose: () => void;
@@ -59,6 +59,30 @@ const GameInstructions: React.FC<GameInstructionsProps> = ({ onClose, visible })
               <li className="flex justify-between">
                 <span>Pause Game:</span>
                 <span className="bg-background px-2 py-1 rounded text-xs">Space</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="bg-muted/30 p-3 rounded-lg">
+            <h3 className="flex items-center gap-2 font-medium mb-2">
+              <Gauge weight="fill" className="text-primary" />
+              Game Speed
+            </h3>
+            <p className="text-foreground/80 text-sm">
+              Adjust the planet's speed using the speed controls at the bottom of the screen:
+            </p>
+            <ul className="mt-2 space-y-1 text-sm">
+              <li className="flex justify-between">
+                <span>Slow:</span>
+                <span>Beginner friendly, relaxed gameplay</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Normal:</span>
+                <span>Standard challenge</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Fast:</span>
+                <span>For experienced players</span>
               </li>
             </ul>
           </div>

@@ -6,16 +6,28 @@
 export const calculateBounce = (
   velocity: { x: number; y: number },
   normal: { x: number; y: number },
-  speedIncrease = 1.05
+  speedIncrease = 1.02
 ): { x: number; y: number } => {
   // Calculate the dot product of velocity and normal
   const dot = velocity.x * normal.x + velocity.y * normal.y;
 
   // Calculate the reflection vector and apply a speed increase
-  return {
+  const newVelocity = {
     x: (velocity.x - 2 * dot * normal.x) * speedIncrease,
     y: (velocity.y - 2 * dot * normal.y) * speedIncrease
   };
+  
+  // Limit the maximum speed to prevent it from getting too fast
+  const speed = Math.sqrt(newVelocity.x * newVelocity.x + newVelocity.y * newVelocity.y);
+  const maxSpeed = 12; // Cap the maximum speed
+  
+  if (speed > maxSpeed) {
+    const ratio = maxSpeed / speed;
+    newVelocity.x *= ratio;
+    newVelocity.y *= ratio;
+  }
+  
+  return newVelocity;
 };
 
 /**
@@ -43,7 +55,7 @@ export const randomNumber = (min: number, max: number): number => {
 /**
  * Calculate initial velocity for the planet with a random direction
  */
-export const getInitialVelocity = (speed = 5): { x: number; y: number } => {
+export const getInitialVelocity = (speed = 3): { x: number; y: number } => {
   // Generate a random angle in radians, but limit it to avoid very shallow angles
   const minAngle = Math.PI / 6; // 30 degrees
   const maxAngle = Math.PI / 3; // 60 degrees
