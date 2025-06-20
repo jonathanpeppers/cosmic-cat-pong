@@ -1,1 +1,158 @@
-/* This is where custom CSS goes */
+@import 'tailwindcss';
+@import "tw-animate-css";
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+}
+
+:root {
+  /* Space theme color palette */
+  --background: oklch(0.2 0.15 265); /* Deep space blue */
+  --foreground: oklch(0.98 0 0);     /* White for text */
+  
+  --card: oklch(0.25 0.1 260);       /* Slightly lighter blue for cards */
+  --card-foreground: oklch(0.98 0 0);
+  
+  --popover: oklch(0.25 0.1 260);
+  --popover-foreground: oklch(0.98 0 0);
+  
+  --primary: oklch(0.9 0.18 85);     /* Bright yellow for primary actions */
+  --primary-foreground: oklch(0.1 0 0); /* Black text on yellow */
+  
+  --secondary: oklch(0.76 0.18 0);   /* Pink for secondary elements */
+  --secondary-foreground: oklch(0.98 0 0);
+  
+  --accent: oklch(0.6 0.18 330);     /* Purple accent */
+  --accent-foreground: oklch(0.98 0 0);
+  
+  --destructive: oklch(0.7 0.2 30);  /* Red for destructive actions */
+  --destructive-foreground: oklch(0.98 0 0);
+  
+  --muted: oklch(0.3 0.05 265);      /* Subtle muted background */
+  --muted-foreground: oklch(0.8 0 0);
+  
+  --border: oklch(0.35 0.1 265);
+  --input: oklch(0.35 0.1 265);
+  --ring: oklch(0.76 0.18 0);        /* Pink ring focus */
+  
+  --radius: 0.75rem;                 /* Slightly more rounded corners */
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Map radius variables */
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
+  --radius-xl: calc(var(--radius) * 2);
+  --radius-2xl: calc(var(--radius) * 3);
+  --radius-full: 9999px;
+}
+
+/* Game specific styles */
+body {
+  font-family: 'Quicksand', sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Exo 2', sans-serif;
+}
+
+.game-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.cat-paddle {
+  transition: transform 0.1s ease-out;
+}
+
+.planet {
+  animation: planet-rotate 20s linear infinite;
+}
+
+@keyframes planet-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.star {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.score-flash {
+  animation: score-pop 0.5s ease-out;
+}
+
+@keyframes score-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Game controls */
+.controls {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}

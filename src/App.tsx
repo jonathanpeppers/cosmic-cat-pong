@@ -1,5 +1,7 @@
+import SpaceCatPong from './components/SpaceCatPong';
+
 function App() {
-    return <div></div>
+  return <SpaceCatPong />;
 }
 
-export default App
+export default App;
