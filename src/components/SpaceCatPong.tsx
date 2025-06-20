@@ -213,16 +213,22 @@ const SpaceCatPong: React.FC = () => {
     
     // Check for top/bottom wall collision
     if (planetPos.y <= 0 || planetPos.y + PLANET_SIZE >= containerSize.height) {
-      // First, reverse the y velocity
-      setPlanetVelocity(velocity => ({
-        x: velocity.x,
-        y: -velocity.y
-      }));
+      // Calculate bounce using normal vector for top/bottom wall
+      const wallNormal = { x: 0, y: planetPos.y <= 0 ? 1 : -1 };
       
-      // Then ensure the planet is repositioned away from the boundary
+      // Apply bounce physics using the same calculation used for paddles
+      const bounceVelocity = calculateBounce(
+        planetVelocity,
+        wallNormal,
+        BOUNCE_INCREASE[speedSetting]
+      );
+      
+      setPlanetVelocity(bounceVelocity);
+      
+      // Ensure the planet is repositioned away from the boundary
       setPlanetPos(pos => ({
         x: pos.x,
-        y: pos.y <= 0 ? 0 : containerSize.height - PLANET_SIZE
+        y: pos.y <= 0 ? 1 : containerSize.height - PLANET_SIZE - 1
       }));
     }
     
