@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useKV } from '@github/spark/hooks';
-import { Button } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Info } from '@phosphor-icons/react';
 import CatPaddle from './CatPaddle';
 import PlanetBall from './PlanetBall';
