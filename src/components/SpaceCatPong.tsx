@@ -213,9 +213,16 @@ const SpaceCatPong: React.FC = () => {
     
     // Check for top/bottom wall collision
     if (planetPos.y <= 0 || planetPos.y + PLANET_SIZE >= containerSize.height) {
+      // First, reverse the y velocity
       setPlanetVelocity(velocity => ({
         x: velocity.x,
         y: -velocity.y
+      }));
+      
+      // Then ensure the planet is repositioned away from the boundary
+      setPlanetPos(pos => ({
+        x: pos.x,
+        y: pos.y <= 0 ? 0 : containerSize.height - PLANET_SIZE
       }));
     }
     
